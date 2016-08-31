@@ -5,7 +5,10 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 
-const SASS_INCLUDES_PATHS = ['./node_modules/'];
+const SASS_INCLUDES_PATHS = [];
+SASS_INCLUDES_PATHS.push(path.resolve(__dirname, '../node_modules', 'angular-material'));
+SASS_INCLUDES_PATHS.push(path.resolve(__dirname, '../node_modules', 'font-awesome/scss'));
+SASS_INCLUDES_PATHS.push(path.resolve(__dirname, '../node_modules', 'material-design-icons/iconfont'));
 
 module.exports = {
   module: {
@@ -21,9 +24,14 @@ module.exports = {
         loaders: [
           'style',
           'css',
-          'sass?includePaths[]=' + SASS_INCLUDES_PATHS,
-          'postcss'
+          'postcss',
+          'resolve-url',
+          'sass?sourceMap'
         ]
+      },
+      {
+        test: /.(png|woff(2)?|eot|ttf|svg)(\?[a-z0-9=\.]+)?$/,
+        loader: 'url-loader?limit=10000'
       },
       {
         test: /\.js$/,
@@ -49,6 +57,9 @@ module.exports = {
       inject: true
     })
   ],
+  sassLoader: {
+    includePaths: SASS_INCLUDES_PATHS
+  },
   postcss: () => [autoprefixer],
   debug: true,
   devtool: 'cheap-module-eval-source-map',
